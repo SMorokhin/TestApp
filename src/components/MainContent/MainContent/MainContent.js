@@ -21,25 +21,36 @@ export default {
   methods: {
     // gapi метод Search.list (получение результата по ключевому слову)
     async getChannel () {
-      const response = await axios.get('/search', {
-        params: {
-          maxResults: 1,
-          q: this.channelName
-        }
-      })
-      this.channelInfo = response.data
-      this.channelName = ''
-      this.loaded = true
+      try {
+        const response = await axios.get('/search', {
+          params: {
+            maxResults: 1,
+            q: this.channelName
+          }
+        })
+        this.channelInfo = response.data
+        this.channelName = ''
+        this.loaded = true
+      } catch (error) {
+        if (error.response)
+          console.log(error.response.data)
+      }
+
     },
     // поиск ID канала по ID видео
     async searchChannelByVideoId (videoId) {
-      const response = await axios.get('/videos', {
-        params: {
-          part: 'snippet',
-          id: videoId
-        }
-      })
-      this.videoInfo = response.data
+      try {
+        const response = await axios.get('/videos', {
+          params: {
+            part: 'snippet',
+            id: videoId
+          }
+        })
+        this.videoInfo = response.data
+      } catch (error) {
+        if (error.response)
+          console.log(error.response.data)
+      }
     },
     goToChannelDescription (channel) {
       const route = '/ChannelDescription/' + channel
@@ -81,14 +92,5 @@ export default {
       }
       return channel
     },
-    channelLink () {
-      if (this.loaded === false) {
-        return null
-      }
-      let channel = ''
-      const url = 'https://youtube.com/channel/'
-      channel = url + this.getChannelId
-      return channel
-    }
   }
 }

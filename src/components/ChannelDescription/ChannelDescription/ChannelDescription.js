@@ -24,25 +24,35 @@ export default {
   },
   methods: {
     async getChannelInfo () {
-      const response = await axios.get('/channels', {
-        params: {
-          part: 'snippet',
-          id: this.$route.params.id
-        }
-      })
-      this.channelInfo = response.data.items[0].snippet
+      try {
+        const response = await axios.get('/channels', {
+          params: {
+            part: 'snippet',
+            id: this.$route.params.id
+          }
+        })
+        this.channelInfo = response.data.items[0].snippet
+      } catch (error) {
+        if (error.response)
+          console.log(error.response.data)
+      }
     },
     async getListVideos () {
-      this.loader = true
-      const response = await axios.get('/search', {
-        params: {
-          part: 'snippet',
-          channelId: this.$route.params.id,
-          maxResults: 900
-        }
-      })
-      this.videosInfo = response.data.items
-      this.loader = false
+      try {
+        this.loader = true
+        const response = await axios.get('/search', {
+          params: {
+            part: 'snippet',
+            channelId: this.$route.params.id,
+            maxResults: 900
+          }
+        })
+        this.videosInfo = response.data.items
+        this.loader = false
+      } catch (error) {
+        if (error.response)
+          console.log(error.response.data)
+      }
     },
     backToMain () {
       this.$router.go(-1)
